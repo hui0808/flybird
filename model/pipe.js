@@ -3,7 +3,7 @@ class Pipe extends GameObject {
         super()
         this.game = game
         this.e = []
-        this.speed = 1
+        this.speed = 3
         this.enableDebug = true
         this.y_step = 200
         this.x_step = 200

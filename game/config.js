@@ -1,4 +1,4 @@
-const globalDebug = true
+const globalDebug = false
 
 const anime = {
     bird: {
@@ -55,7 +55,6 @@ const config = {
         max: 360,
         step: 1,
     },
-
     bird_x: {
         value: 0,
         text: "小鸟x轴翻折: ",
