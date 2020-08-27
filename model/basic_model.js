@@ -99,19 +99,18 @@ class TextMode extends GameObject {
 }
 
 class AnimationMode extends GameObject {
-    constructor(game, name, x = 0, y = 0, frame_times = 3) {
+    constructor(game, name, x = 0, y = 0, status, rate = 3) {
         super()
         this.game = game
         this.name = name
         this.value = anime[this.name]
-        this.e = []
+        this.e = {}
         this.enableDebug = true
-        this.frame_times = frame_times
-        this.frame_count = 0
-        this.frame_index = 0
+        this.rate = rate
+        this.frameIndex = 0
         this._setup()
         this.move(x, y)
-        this.index = 0
+        this.status = status
         this.is_flipX = false
         this.is_flipY = false
         this.rotation = 0
@@ -119,32 +118,32 @@ class AnimationMode extends GameObject {
 
     _setup() {
         let img
-        for (let key of Object.keys(this.value)) {
+        for (let status of Object.keys(this.value)) {
             let temp = []
-            for (let key2 of Object.keys(this.value[key])) {
-                img = ImageMode.new(this.game, key2)
+            for (let key of Object.keys(this.value[status])) {
+                img = ImageMode.new(this.game, key)
                 temp.push(img)
             }
-            this.e.push(temp)
+            this.e[status] = temp
         }
         this.w = img.w
         this.h = img.h
     }
 
     destory() {
-        this.e[this.index][this.frame_index].destory()
+        foreach(this.e, 'destory')
     }
 
     debug() {
         if (this.enableDebug) {
-            this.e[this.index][this.frame_index].destory()
+            this.e[this.status][this.frameIndex].destory()
         }
     }
 
     update() {
-        if (this.game.times % this.frame_times === 0) {
-            this.frame_index = (this.frame_index + 1) % this.e[this.index].length
-            let img = this.e[this.index][this.frame_index]
+        if (this.game.times % this.rate === 0) {
+            this.frameIndex = (this.frameIndex + 1) % this.e[this.status].length
+            let img = this.e[this.status][this.frameIndex]
             img.update()
             this.w = img.w
             this.h = img.h
@@ -154,7 +153,7 @@ class AnimationMode extends GameObject {
 
     draw() {
         let context = this.game.context
-        let img = this.e[this.index][this.frame_index]
+        let img = this.e[this.status][this.frameIndex]
         let x = this.x + this.w / 2
         let y = this.y + this.h / 2
         context.save()
@@ -171,21 +170,23 @@ class AnimationMode extends GameObject {
         context.restore()
     }
 
-    move(x, y) {
-        x = x + this.w > this.game.canvas.width ? this.game.canvas.width - this.w : x < 0 ? 0 : x
-        y = y + this.h > this.game.canvas.height ? this.game.canvas.height - this.h : y < 0 ? 0 : y
-        forcount(this.e, 2, function(o) {
+    move(x, y, mode = 1) {
+        if (mode) {
+            x = x + this.w > this.game.canvas.width ? this.game.canvas.width - this.w : x < 0 ? 0 : x
+            y = y + this.h > this.game.canvas.height ? this.game.canvas.height - this.h : y < 0 ? 0 : y
+        }
+        forcount(this.e, 2, function (o) {
             o.x = x
             o.y = y
         })
     }
 
-    moveX(pixel) {
-        this.move(pixel, this.y)
+    moveX(pixel, mode) {
+        this.move(pixel, this.y, mode)
     }
 
-    moveY(pixel) {
-        this.move(this.x, pixel)
+    moveY(pixel, mode) {
+        this.move(this.x, pixel, mode)
     }
 
     flipX(status) {
@@ -201,10 +202,10 @@ class AnimationMode extends GameObject {
     }
 
     get y() {
-        return this.e[this.index][this.frame_index].y
+        return this.e[this.status][this.frameIndex].y
     }
 
     get x() {
-        return this.e[this.index][this.frame_index].x
+        return this.e[this.status][this.frameIndex].x
     }
 }

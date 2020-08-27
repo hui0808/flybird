@@ -1,6 +1,6 @@
 class Bird extends AnimationMode {
-    constructor(game, x = 0, y = 0, frame_times = 3) {
-        super(game, 'bird', x, y, frame_times)
+    constructor(game, x = 0, y = 0, rate = 3) {
+        super(game, 'bird', x, y, 'bird_general', rate)
         this.enableDebug = true
         this.vy = 0
         this.bottom_y = 396
@@ -54,7 +54,13 @@ class Bird extends AnimationMode {
 
     // 小鸟速度等于0时显示normal动作，大于0时显示down动作，小于0时显示up动作
     check() {
-        this.index = this.vy === 0 ? 0 : this.vy < 0 ? 1 : 2
+        if  (this.vy === 0) {
+            this.status = 'bird_general'
+        } else if (this.vy < 0) {
+            this.status = 'bird_up'
+        } else {
+            this.status = 'bird_down'
+        }
     }
 
     fall() {
