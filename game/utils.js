@@ -40,7 +40,7 @@ const templaterender = function(name, item) {
     return `
             <div>
                 <label>
-                    <input class="range_value" type="range" step="${item.step || 1}" value="${item.value}" data-value="config.${name}" min="${item.min}" max="${item.max}">
+                    <input class="range_value" type="range" step="${item.step || 1}" value="${item.value}" data-key="${name}" min="${item.min}" max="${item.max}">
                     ${item.text}<span class="display-label">${item.value}</span>
                 </label>
             </div>
@@ -59,9 +59,9 @@ const slider_debug = function() {
 
     bindAll('.range_value', 'input', function(event) {
         let target = event.target
-        let value = target.value
-        let bindVar = target.dataset.value
-        eval(bindVar + '.value =' + value)
+        let value = Number(target.value)
+        let key = target.dataset.key
+        config[key].value = value
         let label = target.closest('label').querySelector('.display-label')
         label.innerText = value
     })

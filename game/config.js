@@ -28,7 +28,7 @@ const images = {
     game_over: 'img/game_over.jpg',
 }
 
-const config = {
+let config = {
     fps: {
         value: 30,
         text: "fps: ",
